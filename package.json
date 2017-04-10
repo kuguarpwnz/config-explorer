@@ -1,0 +1,25 @@
+{
+  "name": "config-explorer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/formatter/index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "NODE_ENV=production webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuguarpwnz/json-formatter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kuguarpwnz/json-formatter/issues"
+  },
+  "homepage": "https://github.com/kuguarpwnz/json-formatter#readme",
+  "devDependencies": {
+    "webpack": "^2.3.3",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
