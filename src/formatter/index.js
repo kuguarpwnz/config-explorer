@@ -34,32 +34,41 @@ export default class {
 
     target.appendChild(document.createTextNode(openBrace));
 
-    const node =  document.createElement('span');
-    if (keysLength) node.className = 'collapsible';
-    target.appendChild(node);
-    node.appendChild(document.createTextNode(newLine));
+    if (keysLength) {
+      const node = document.createElement('span');
+      node.className = 'collapsible';
 
-    keys.forEach((objectKey, i) => {
-      const indent = i ? '\n' : '';
-      const key = isArray ? '' : `${this._withClass('key', objectKey)}: `;
-      const spaces = this._spaces(depth);
-      const comma = keysLength - 1 === i ? '' : ',';
+      target.appendChild(node);
+      node.appendChild(document.createTextNode(newLine));
+
+      keys.forEach((objectKey, i) => {
+        const indent = i ? '\n' : '';
+        const spaces = this._spaces(depth);
+        const comma = keysLength - 1 === i ? '' : ',';
 
 
-      node.appendChild(document.createTextNode(`${indent}${spaces}`));
-      if (key) {
-        node.appendChild(this._withClass('key', objectKey));
-        node.appendChild(document.createTextNode(': '));
-      }
-      this._generate(node, object[objectKey], depth + 1);
-      node.appendChild(document.createTextNode(comma));
-      
-    });
+        node.appendChild(document.createTextNode(`${indent}${spaces}`));
+        if (!isArray) {
+          const key = this._withClass('key', objectKey);
+          key.onclick = this.constructor._isFunction(this._onNodeClick) ? this._onNodeClick : null;
+          node.appendChild(key);
+          node.appendChild(document.createTextNode(': '));
+        }
+        this._generate(node, object[objectKey], depth + 1);
+        node.appendChild(document.createTextNode(comma));
 
-    node.appendChild(document.createTextNode(`${newLine}${spaces}`));
+      });
+
+      node.appendChild(document.createTextNode(`${newLine}${spaces}`));
+    }
     target.appendChild(document.createTextNode(closeBrace));
 
     return target;
+  }
+
+  onNodeClick(fn) {
+    this._onNodeClick = fn;
+    return this;
   }
 
   _withClass(className = '', value) {
@@ -107,6 +116,10 @@ export default class {
 
   static _isString(value) {
     return typeof value === 'string';
+  }
+
+  static _isFunction(value) {
+    return typeof value === 'function';
   }
 
   _isObject(value) {
