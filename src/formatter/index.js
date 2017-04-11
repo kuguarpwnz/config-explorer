@@ -33,7 +33,11 @@ export default class {
     const isArray = this.constructor._isArray(object);
 
     target.appendChild(document.createTextNode(openBrace));
-    target.appendChild(document.createTextNode(newLine));
+
+    const node =  document.createElement('span');
+    if (keysLength) node.className = 'collapsible';
+    target.appendChild(node);
+    node.appendChild(document.createTextNode(newLine));
 
     keys.forEach((objectKey, i) => {
       const indent = i ? '\n' : '';
@@ -42,17 +46,18 @@ export default class {
       const comma = keysLength - 1 === i ? '' : ',';
 
 
-      target.appendChild(document.createTextNode(`${indent}${spaces}`));
+      node.appendChild(document.createTextNode(`${indent}${spaces}`));
       if (key) {
-        target.appendChild(this._withClass('key', objectKey));
-        target.appendChild(document.createTextNode(': '));
+        node.appendChild(this._withClass('key', objectKey));
+        node.appendChild(document.createTextNode(': '));
       }
-      this._generate(target, object[objectKey], depth + 1);
-      target.appendChild(document.createTextNode(comma));
+      this._generate(node, object[objectKey], depth + 1);
+      node.appendChild(document.createTextNode(comma));
       
     });
 
-    target.appendChild(document.createTextNode(`${newLine}${spaces}${closeBrace}`));
+    node.appendChild(document.createTextNode(`${newLine}${spaces}`));
+    target.appendChild(document.createTextNode(closeBrace));
 
     return target;
   }
