@@ -1,42 +1,46 @@
+import * as utils from '../utils';
+
 export default class {
   constructor(placeholder, indent = 2) {
     this.placeholder = placeholder;
     this.indent = indent;
-    this._classNamePrefix = '_config-explorer-';
+    this._classNamePrefix = '_c-e-';
   }
 
   static create(...args) {
     return new this(...args);
   }
 
-  format(state) {
-    // this.placeholder.innerHTML = `<pre>${this._generate(state)}</pre>`;
+  print(state) {
     this.placeholder.appendChild(
-      this._generate(document.createElement('pre'), state)
+      this._generate(
+        document.createElement('pre'),
+        JSON.parse(JSON.stringify(state))
+      )
     );
 
     return this;
   }
 
   _generate(target, value, depth = 1) {
-    return this.constructor._isObjectLike(value) ?
+    return utils.isObjectLike(value) ?
       this._generateObjectLike(target, value, depth) :
       this._generatePrimitive(target, value);
   }
 
   _generateObjectLike(target, object, depth) {
-    const [openBrace, closeBrace] = (this.constructor._isArray(object) ? '[]' : '{}').split('');
+    const [openBrace, closeBrace] = utils.isArray(object) ? '[]' : '{}';
     const keys = Object.keys(object);
     const { length: keysLength } = keys;
     const spaces = keysLength ? this._spaces(depth - 1) : '';
     const newLine = keysLength ? '\n' : '';
-    const isArray = this.constructor._isArray(object);
+    const isArray = utils.isArray(object);
 
     target.appendChild(document.createTextNode(openBrace));
 
     if (keysLength) {
       const node = document.createElement('span');
-      node.className = 'collapsible';
+      node.className = this._getClass('collapsible');
 
       target.appendChild(node);
       node.appendChild(document.createTextNode(newLine));
@@ -46,14 +50,16 @@ export default class {
         const spaces = this._spaces(depth);
         const comma = keysLength - 1 === i ? '' : ',';
 
-
         node.appendChild(document.createTextNode(`${indent}${spaces}`));
+
         if (!isArray) {
-          const key = this._withClass('key', objectKey);
-          key.onclick = this.constructor._isFunction(this._onNodeClick) ? this._onNodeClick : null;
+          const keyClassNames = ['key', 'opened', ...(utils.isObjectLike(object[objectKey]) ? ['collapsible'] : [])];
+          const key = this._withClass(objectKey, ...keyClassNames);
+          key.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
           node.appendChild(key);
           node.appendChild(document.createTextNode(': '));
         }
+
         this._generate(node, object[objectKey], depth + 1);
         node.appendChild(document.createTextNode(comma));
 
@@ -71,10 +77,9 @@ export default class {
     return this;
   }
 
-  _withClass(className = '', value) {
-    // return `<span class="${this._getClass(className)}">${value}</span>`;
+  _withClass(value, ...classNames) {
     const span = document.createElement('span');
-    span.className = this._getClass(className);
+    span.className = classNames.map((className) => this._getClass(className)).join(' ');
     span.innerHTML = value;
     return span;
   }
@@ -87,7 +92,7 @@ export default class {
     count *= this.indent;
     let result = "";
     for (let i = 0; i < count; ++i) {
-      result = `${result} `;
+      result = result + (i % this.indent ? ' ' : '|');
     }
     return result;
   }
@@ -95,42 +100,10 @@ export default class {
   _generatePrimitive(target, value) {
     target.appendChild(
       this._withClass(
-        this.constructor._getPrimitiveClass(value),
-        this.constructor._isString(value) ? `"${value}"` : value
+        utils.isString(value) ? `"${value}"` : value,
+        (typeof value).toLowerCase()
       )
     );
     return target;
-  }
-
-  static _getPrimitiveClass(value) {
-    return (typeof value).toLowerCase();
-  }
-
-  static _isObjectLike(value) {
-    return value !== null && typeof value === 'object';
-  }
-
-  static _isArray(value) {
-    return {}.toString.call(value) === '[object Array]';
-  }
-
-  static _isString(value) {
-    return typeof value === 'string';
-  }
-
-  static _isFunction(value) {
-    return typeof value === 'function';
-  }
-
-  _isObject(value) {
-    return this._isObjectLike(value) && !this._isArray(value);
-  }
-
-  set state(value) {
-    this._state = JSON.parse(JSON.stringify(value));
-  }
-
-  get state() {
-    return this._state;
   }
 }

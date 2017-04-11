@@ -7,24 +7,32 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        /*.collapsible {*/
-        /*background-color: rgba(67, 223, 225, 0.3);*/
-        /*}*/
-        ._config-explorer-boolean {
+        ._c-e-boolean {
             color: rebeccapurple;
         }
 
-        ._config-explorer-number {
+        ._c-e-number {
             color: cornflowerblue;
         }
 
-        ._config-explorer-string {
+        ._c-e-string {
             color: darkred;
         }
 
-        ._config-explorer-key {
-            cursor: pointer;
+        ._c-e-key {
             color: lightslategray;
+        }
+
+        ._c-e-key._c-e-collapsible {
+            cursor: pointer;
+        }
+
+        ._c-e-key._c-e-opened {
+            font-weight: normal;
+        }
+
+        ._c-e-key._c-e-closed {
+            font-weight: bold;
         }
     </style>
 </head>
