@@ -30,9 +30,9 @@ export default class {
   _generateObjectLike(target, object, depth) {
     const [openBrace, closeBrace] = this._getBraces(object);
 
-    target.appendChild(document.createTextNode(openBrace));
+    target.appendChild(openBrace);
     this._generateNode(target, object, depth);
-    target.appendChild(document.createTextNode(closeBrace));
+    target.appendChild(closeBrace);
 
     return target;
   }
@@ -67,7 +67,7 @@ export default class {
     !utils.isArray(object) && this._generateChildNodeKeys(value, key, node);
 
     this._generate(node, value, depth + 1);
-    node.appendChild(document.createTextNode(valuesCount - 1 === index ? '' : ','));
+    valuesCount - 1 !== index && node.appendChild(this._withClass(',', 'comma'));
   }
 
   _generateChildNodeKeys(value, key, node) {
@@ -78,11 +78,13 @@ export default class {
     nodeKey.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
 
     node.appendChild(nodeKey);
-    node.appendChild(document.createTextNode(': '));
+    node.appendChild(this._withClass(':', 'colon'));
+    node.appendChild(document.createTextNode(' '));
   }
 
   _getBraces(object) {
-    return utils.isArray(object) ? '[]' : '{}';
+    return (utils.isArray(object) ? '[]' : '{}')
+      .split('').map((brace) => this._withClass(brace, 'brace'));
   }
 
   _withClass(value, ...classNames) {

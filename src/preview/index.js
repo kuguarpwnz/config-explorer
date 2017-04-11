@@ -19,9 +19,9 @@ const hasClass = (element, search) => ~element.className.split(' ').indexOf(sear
 
 ConfigExplorer.create(document.getElementById('placeholder'))
   .onNodeClick((e) => {
-    const collapsibleClass = 'collapsible';
     const ct = e.currentTarget;
-    const collapsible = ct.nextElementSibling;
+    // TODO: replace with search in siblings by class
+    const collapsible = ct.nextElementSibling.nextElementSibling.nextElementSibling;
 
     if (collapsible && hasClass(ct, 'clickable') && hasClass(collapsible, 'collapsible')) {
       toggle(collapsible);
