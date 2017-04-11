@@ -10,17 +10,21 @@ export default class {
   }
 
   format(state) {
-    this.placeholder.innerHTML = `<pre>${this._generate(state)}</pre>`;
+    // this.placeholder.innerHTML = `<pre>${this._generate(state)}</pre>`;
+    this.placeholder.appendChild(
+      this._generate(document.createElement('pre'), state)
+    );
+
     return this;
   }
 
-  _generate(value, depth = 1) {
+  _generate(target, value, depth = 1) {
     return this.constructor._isObjectLike(value) ?
-      this._generateObjectLike(value, depth) :
-      this._generatePrimitive(value);
+      this._generateObjectLike(target, value, depth) :
+      this._generatePrimitive(target, value);
   }
 
-  _generateObjectLike(object, depth) {
+  _generateObjectLike(target, object, depth) {
     const [openBrace, closeBrace] = (this.constructor._isArray(object) ? '[]' : '{}').split('');
     const keys = Object.keys(object);
     const { length: keysLength } = keys;
@@ -28,28 +32,37 @@ export default class {
     const newLine = keysLength ? '\n' : '';
     const isArray = this.constructor._isArray(object);
 
-    const value = keys.reduce((result, objectKey, i) => {
+    target.appendChild(document.createTextNode(openBrace));
+    target.appendChild(document.createTextNode(newLine));
+
+    keys.forEach((objectKey, i) => {
       const indent = i ? '\n' : '';
       const key = isArray ? '' : `${this._withClass('key', objectKey)}: `;
-      const jsonValue = this._generate(object[objectKey], depth + 1);
       const spaces = this._spaces(depth);
       const comma = keysLength - 1 === i ? '' : ',';
 
-      return result = `${result}${indent}${spaces}${key}${jsonValue}${comma}`;
-    }, '');
 
-    const generated = keysLength ?
-      this._withClass(
-        'collapsible',
-        `${newLine}${value}${newLine}${spaces}`
-      ) : '';
+      target.appendChild(document.createTextNode(`${indent}${spaces}`));
+      if (key) {
+        target.appendChild(this._withClass('key', objectKey));
+        target.appendChild(document.createTextNode(': '));
+      }
+      this._generate(target, object[objectKey], depth + 1);
+      target.appendChild(document.createTextNode(comma));
+      
+    });
 
+    target.appendChild(document.createTextNode(`${newLine}${spaces}${closeBrace}`));
 
-    return `${openBrace}${generated}${closeBrace}`;
+    return target;
   }
 
   _withClass(className = '', value) {
-    return `<span class="${this._getClass(className)}">${value}</span>`;
+    // return `<span class="${this._getClass(className)}">${value}</span>`;
+    const span = document.createElement('span');
+    span.className = this._getClass(className);
+    span.innerHTML = value;
+    return span;
   }
 
   _getClass(className) {
@@ -65,11 +78,14 @@ export default class {
     return result;
   }
 
-  _generatePrimitive(value) {
-    return this._withClass(
-      this.constructor._getPrimitiveClass(value),
-      this.constructor._isString(value) ? `"${value}"` : value
+  _generatePrimitive(target, value) {
+    target.appendChild(
+      this._withClass(
+        this.constructor._getPrimitiveClass(value),
+        this.constructor._isString(value) ? `"${value}"` : value
+      )
     );
+    return target;
   }
 
   static _getPrimitiveClass(value) {
