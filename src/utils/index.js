@@ -9,3 +9,5 @@ export const isString = (value) => _is(value, 'string');
 export const isFunction = (value) => _is(value, 'function');
 
 export const isObject = (value) => isObjectLike(value) && !isArray(value);
+
+export const escapeJSON = (value) => JSON.parse(JSON.stringify(value));
