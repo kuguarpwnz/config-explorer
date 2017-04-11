@@ -5,7 +5,7 @@
   "main": "src/formatter/index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/kuguarpwnz/json-formatter#readme",
   "devDependencies": {
+    "cross-env": "^4.0.0",
     "webpack": "^2.3.3",
     "webpack-dev-server": "^2.4.2"
   }

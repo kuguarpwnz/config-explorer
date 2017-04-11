@@ -1,5 +1,4 @@
-import Formatter from '../formatter';
+import ConfigExplorer from '../formatter';
 import state from './state';
 
-const f = new Formatter(document.getElementById('placeholder'), state);
-f.format();
+ConfigExplorer.create(document.getElementById('placeholder')).format(state);
