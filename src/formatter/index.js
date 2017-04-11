@@ -15,7 +15,7 @@ export default class {
     this.placeholder.appendChild(
       this._generate(
         document.createElement('pre'),
-        JSON.parse(JSON.stringify(state))
+        utils.escapeJSON(state)
       )
     );
 
@@ -29,44 +29,39 @@ export default class {
   }
 
   _generateObjectLike(target, object, depth) {
-    const [openBrace, closeBrace] = utils.isArray(object) ? '[]' : '{}';
+    const [openBrace, closeBrace] = this._getBraces(object);
     const keys = Object.keys(object);
-    const { length: keysLength } = keys;
-    const spaces = keysLength ? this._spaces(depth - 1) : '';
-    const newLine = keysLength ? '\n' : '';
-    const isArray = utils.isArray(object);
+    const valuesCount = keys.length;
 
     target.appendChild(document.createTextNode(openBrace));
 
-    if (keysLength) {
+    if (valuesCount) {
       const node = document.createElement('span');
       node.className = this._getClass('collapsible');
-
       target.appendChild(node);
-      node.appendChild(document.createTextNode(newLine));
 
-      keys.forEach((objectKey, i) => {
-        const indent = i ? '\n' : '';
-        const spaces = this._spaces(depth);
-        const comma = keysLength - 1 === i ? '' : ',';
+      keys.forEach((key, i) => {
+        const value = object[key];
+        node.appendChild(document.createTextNode('\n'));
+        node.appendChild(this._withClass(this._spaces(depth), 'space'));
 
-        node.appendChild(document.createTextNode(`${indent}${spaces}`));
-
-        if (!isArray) {
-          const keyClassNames = ['key', 'opened', ...(utils.isObjectLike(object[objectKey]) ? ['collapsible'] : [])];
-          const key = this._withClass(objectKey, ...keyClassNames);
-          key.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
-          node.appendChild(key);
+        if (!utils.isArray(object)) {
+          const keyClassNames = ['key'].concat(Object.keys(value).length ? ['opened', 'collapsible'] : []);
+          const nodeKey = this._withClass(key, ...keyClassNames);
+          nodeKey.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
+          node.appendChild(nodeKey);
           node.appendChild(document.createTextNode(': '));
         }
 
-        this._generate(node, object[objectKey], depth + 1);
-        node.appendChild(document.createTextNode(comma));
+        this._generate(node, value, depth + 1);
+        node.appendChild(document.createTextNode(valuesCount - 1 === i ? '' : ','));
 
       });
 
-      node.appendChild(document.createTextNode(`${newLine}${spaces}`));
+      node.appendChild(document.createTextNode('\n'));
+      node.appendChild(this._withClass(this._spaces(depth - 1), 'space'));
     }
+
     target.appendChild(document.createTextNode(closeBrace));
 
     return target;
@@ -75,6 +70,10 @@ export default class {
   onNodeClick(fn) {
     this._onNodeClick = fn;
     return this;
+  }
+
+  _getBraces(object) {
+    return utils.isArray(object) ? '[]' : '{}';
   }
 
   _withClass(value, ...classNames) {
