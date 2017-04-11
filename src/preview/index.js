@@ -19,14 +19,14 @@ const hasClass = (element, search) => ~element.className.split(' ').indexOf(sear
 
 ConfigExplorer.create(document.getElementById('placeholder'))
   .onNodeClick((e) => {
-    const collapsibleClass = '_c-e-collapsible';
+    const collapsibleClass = 'collapsible';
     const ct = e.currentTarget;
     const collapsible = ct.nextElementSibling;
 
-    if (collapsible && hasClass(ct, collapsibleClass) && hasClass(collapsible, collapsibleClass)) {
+    if (collapsible && hasClass(ct, 'clickable') && hasClass(collapsible, 'collapsible')) {
       toggle(collapsible);
-      toggleClass(ct, '_c-e-opened');
-      toggleClass(ct, '_c-e-closed');
+      toggleClass(ct, 'opened');
+      toggleClass(ct, 'closed');
     }
   })
   .print(state);
