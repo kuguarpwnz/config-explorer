@@ -8,7 +8,7 @@ const output = resolve(`src/${isDev ? 'preview' : 'dist'}`);
 
 module.exports = {
   entry: {
-    index: resolve(`src/${isDev ? 'preview' : 'formatter'}/index`),
+    index: resolve(`src/${isDev ? 'preview' : 'explorer'}/index`),
   },
 
   output: {

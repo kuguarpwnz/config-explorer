@@ -1,4 +1,4 @@
-import ConfigExplorer from '../formatter';
+import ConfigExplorer from '../explorer';
 import state from './state';
 
 const toggleClass = (element, toggleClass) => {
@@ -17,7 +17,29 @@ const toggle = (element, visible = 'inline') => {
 
 const hasClass = (element, search) => ~element.className.split(' ').indexOf(search);
 
-ConfigExplorer.create(document.getElementById('placeholder'))
+
+const changeObject = (object, path, value) => {
+  path = path.split('.');
+
+  while (true) {
+    const { length } = path;
+    const key = path.shift();
+
+    if (length === 1) {
+      object[key] = value;
+      break;
+    }
+
+    if (!object.hasOwnProperty(key)) break;
+
+    object = object[key];
+  }
+};
+
+
+const configExplorer = new ConfigExplorer(document.getElementById('placeholder'));
+
+configExplorer
   .onNodeClick((e) => {
     const ct = e.currentTarget;
     // TODO: replace with search in siblings by class
@@ -28,5 +50,11 @@ ConfigExplorer.create(document.getElementById('placeholder'))
       toggleClass(ct, 'opened');
       toggleClass(ct, 'closed');
     }
+  })
+  .onEnumChange((path, value) => {
+    changeObject(state, path, value);
+    configExplorer.print(state);
+  }, {
+    'state.time.value': ['2014', '2015', '2016', '2017']
   })
   .print(state);
