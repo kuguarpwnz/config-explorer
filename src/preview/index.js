@@ -51,10 +51,11 @@ configExplorer
       toggleClass(ct, 'closed');
     }
   })
+  .enums({
+    'state.time.value': ['2014', '2015', '2016', '2017']
+  })
   .onEnumChange((path, value) => {
     changeObject(state, path, value);
     configExplorer.print(state);
-  }, {
-    'state.time.value': ['2014', '2015', '2016', '2017']
   })
   .print(state);

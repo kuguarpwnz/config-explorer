@@ -23,15 +23,21 @@ export default class {
     return this;
   }
 
+  enums(value = {}) {
+    this._enums = value;
+
+    return this;
+  }
+
   onNodeClick(fn) {
     this._onNodeClick = fn;
 
     return this;
   }
 
-  onEnumChange(fn, values = {}) {
+
+  onEnumChange(fn) {
     this._onEnumChange = fn;
-    this._enums = values;
 
     return this;
   }
