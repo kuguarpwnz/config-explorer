@@ -133,9 +133,9 @@ export default class {
           ...value === enumValue ? ['selected'] : []
         );
 
-        enumElement.dataset.value = enumValue;
+        enumElement.dataset.value = JSON.stringify(enumValue);
         enumElement.onclick = utils.isFunction(this._onEnumChange) ?
-          (event) => this._onEnumChange(path, event.target.dataset.value) :
+          (event) => this._onEnumChange(path, JSON.parse(event.target.dataset.value)) :
           null;
 
         target.appendChild(enumElement);
@@ -146,6 +146,7 @@ export default class {
       target.appendChild(this.constructor._wrap(')', 'brace'));
 
     } else {
+      value = utils.isString(value) ? `"${value}"` : value;
       target.appendChild(this.constructor._wrap(value, 'value', this.constructor._getPrimitiveClass(value)));
     }
 
