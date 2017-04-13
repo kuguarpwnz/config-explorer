@@ -26,11 +26,14 @@ const changeObject = (object, path, value) => {
     const key = path.shift();
 
     if (length === 1) {
-      object[key] = value;
-      break;
+      if (object[key] !== value) {
+        object[key] = value;
+        return true;
+      }
+      return false;
     }
 
-    if (!object.hasOwnProperty(key)) break;
+    if (!object.hasOwnProperty(key)) return false;
 
     object = object[key];
   }
@@ -55,7 +58,6 @@ configExplorer
     'state.time.value': ['2014', '2015', '2016', '2017']
   })
   .onEnumChange((path, value) => {
-    changeObject(state, path, value);
-    configExplorer.print(state);
+    changeObject(state, path, value) && configExplorer.print(state);
   })
   .print(state);
