@@ -15,8 +15,7 @@ export default class {
     this.placeholder.appendChild(
       this._generate(
         document.createElement('pre'),
-        utils.escapeJSON(state),
-        1
+        utils.escapeJSON(state)
       )
     );
 
