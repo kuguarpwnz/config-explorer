@@ -1,25 +1,48 @@
 const path = require('path');
+
 const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const resolve = (...args) => path.resolve(__dirname, ...args);
 
 const isDev = process.env.NODE_ENV !== 'production';
-const output = resolve(`src/${isDev ? 'preview' : 'dist'}`);
+const output = resolve(isDev ? 'src/preview' : 'dist');
 
 module.exports = {
   entry: {
     index: resolve(`src/${isDev ? 'preview' : 'explorer'}/index`),
   },
 
-  output: {
-    path: output,
-    filename: '[name].js'
+  output: Object.assign({
+      path: output,
+      filename: '[name].js'
+    },
+    !isDev && {
+      library: 'ConfigExplorer',
+      libraryTarget: 'umd',
+      umdNamedDefine: true
+    }),
+
+  module: {
+    loaders: isDev ? [] : [
+        {
+          test: /\.js/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['env']
+            }
+          }
+        }
+      ]
   },
 
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
-  
+  plugins: isDev ? [
+      new webpack.HotModuleReplacementPlugin()
+    ] : [
+      new CleanWebpackPlugin(['dist'])
+    ],
+
   devServer: {
     contentBase: output,
     hot: true
