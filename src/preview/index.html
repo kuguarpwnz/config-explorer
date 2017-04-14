@@ -9,37 +9,41 @@
     <style>
         body {
             line-height: 17px;
-            background-color: #0a0b10;
+            background-color: #e8e8e8;
         }
 
         .value.boolean {
-            color: #d68611;
+            color: #de8602;
         }
 
         .value.number {
-            color: #79b534;
+            color: #1669d9;
         }
 
         .value.string {
-            color: #d62863;
+            color: #cc1352;
         }
 
         .value.selected {
-            background-color: rgba(0, 150, 136, 0.3);
-        }
-
-        .key {
-            color: #37708c;
+            background-color: rgba(64, 175, 227, 0.3);
         }
 
         .key.clickable, .value.enum {
             cursor: pointer;
         }
 
+        .key.clickable:hover {
+            text-decoration: underline;
+        }
+
         .value.enum {
-            border: 1px solid #009688;
+            border: 1px solid #43555d;
             border-right-width: 0;
-            padding: 0 5px;
+            padding: 1px 5px;
+        }
+
+        .value.enum:hover {
+            background-color: rgba(64, 175, 227, 0.3);
         }
 
         .collapsible {
@@ -68,7 +72,7 @@
         }
 
         .key {
-            color: #3cade4;
+            color: #43555d;
         }
         
         .key.clickable {
@@ -87,13 +91,18 @@
             font-weight: normal;
         }
 
-        .space, .comma {
-            color: #00e2ff;
-            opacity: 0.2;
+        .space {
+            color: #43555d;
+            opacity: 0.3;
+        }
+
+        .comma {
+            color: #43555d;
+            opacity: 0.8;
         }
 
         .brace, .colon {
-            color: #009688;
+            color: #43555d;
         }
     </style>
 </head>
