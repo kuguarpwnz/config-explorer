@@ -63,7 +63,10 @@ export default class {
     const valuesCount = keys.length;
 
     if (valuesCount) {
-      const node = this.constructor._wrap('', 'collapsible');
+      const nodeClassNames = ['collapsible', `depth-${depth}`];
+      this._pathHasEnums(path) && nodeClassNames.push('opened');
+
+      const node = this.constructor._wrap('', ...nodeClassNames);
       target.appendChild(node);
 
       keys.forEach((key, index) => this._generateNodeValue(object, key, node, path, index, depth, valuesCount));
@@ -89,12 +92,23 @@ export default class {
 
   _generateNodeValueKey(value, key, node, path) {
     const isClickable = utils.isObjectLike(value) && Object.keys(value).length;
-    const keyClassNames = ['key'].concat(isClickable ? ['opened', 'clickable'] : []);
-    const nodeKey = this.constructor._wrap(isClickable ? `▼ ︎${key}` : key, ...keyClassNames);
+    const keyClassNames = ['key'];
+
+    isClickable && keyClassNames.push('clickable');
+    this._pathHasEnums(path) && keyClassNames.push('opened');
+
+    const nodeKey = this.constructor._wrap(key, ...keyClassNames);
     nodeKey.dataset.path = path;
 
     if (isClickable) {
-      nodeKey.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
+      nodeKey.onclick = (event) => {
+        const { currentTarget } = event;
+        const collapsible = currentTarget.nextElementSibling.nextElementSibling.nextElementSibling;
+
+        utils.toggleClass(currentTarget, 'opened');
+        utils.toggleClass(collapsible, 'opened');
+        utils.isFunction(this._onNodeClick) && this._onNodeClick(event, collapsible);
+      };
     }
 
     node.appendChild(nodeKey);
@@ -131,13 +145,15 @@ export default class {
           this.constructor._getPrimitiveClass(enumValue),
           ...value === enumValue ? ['selected'] : [],
           ...index ? [] : ['first'],
-          ...length - 1 !== index ? [] : ['last'] 
+          ...length - 1 !== index ? [] : ['last']
         );
 
         enumElement.dataset.value = JSON.stringify(enumValue);
-        enumElement.onclick = utils.isFunction(this._onEnumChange) ?
-          (event) => this._onEnumChange(path, JSON.parse(event.target.dataset.value)) :
-          null;
+        enumElement.onclick = (event) => {
+          if (utils.isFunction(this._onEnumChange)) {
+            this._onEnumChange(path, JSON.parse(event.target.dataset.value))
+          }
+        };
 
         target.appendChild(enumElement);
       });
@@ -148,6 +164,10 @@ export default class {
     }
 
     return target;
+  }
+
+  _pathHasEnums(path) {
+    return Object.keys(this._enums || {}).some((enumPath) => ~enumPath.indexOf(path));
   }
 
   static _getPrimitiveClass(value) {
