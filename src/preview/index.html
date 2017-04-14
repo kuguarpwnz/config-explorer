@@ -8,6 +8,7 @@
     <title>Document</title>
     <style>
         body {
+            line-height: 17px;
             background-color: #0a0b10;
         }
 
@@ -24,7 +25,7 @@
         }
 
         .value.selected {
-            text-decoration: underline;
+            background-color: rgba(0, 150, 136, 0.3);
         }
 
         .key {
@@ -33,6 +34,25 @@
 
         .key.clickable, .value.enum {
             cursor: pointer;
+        }
+
+        .value.enum {
+            border: 1px solid #009688;
+            border-right-width: 0;
+            padding: 0 5px;
+        }
+
+        .value.enum.first {
+            border-radius: 5px 0 0 5px;;
+        }
+
+        .value.enum.last {
+            border-radius: 0 5px 5px 0;
+            border-right-width: 1px;
+        }
+
+        .value.enum.first.last {
+            border-radius: 5px 5px 5px 5px;
         }
 
         .key.opened {

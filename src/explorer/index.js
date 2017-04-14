@@ -123,16 +123,15 @@ export default class {
     if (enums) {
       const { length } = enums;
 
-      target.appendChild(this.constructor._wrap('(', 'brace'));
-
       enums.map((enumValue, index) => {
-
         const enumElement = this.constructor._wrap(
           utils.isString(enumValue) ? `"${enumValue}"` : enumValue,
           'value',
           'enum',
           this.constructor._getPrimitiveClass(enumValue),
-          ...value === enumValue ? ['selected'] : []
+          ...value === enumValue ? ['selected'] : [],
+          ...index ? [] : ['first'],
+          ...length - 1 !== index ? [] : ['last'] 
         );
 
         enumElement.dataset.value = JSON.stringify(enumValue);
@@ -141,11 +140,7 @@ export default class {
           null;
 
         target.appendChild(enumElement);
-
-        length - 1 !== index && target.appendChild(this.constructor._wrap(', ', 'comma'));
       });
-
-      target.appendChild(this.constructor._wrap(')', 'brace'));
 
     } else {
       value = utils.isString(value) ? `"${value}"` : value;
