@@ -90,10 +90,12 @@ export default class {
   _generateNodeValueKey(value, key, node, path) {
     const isClickable = utils.isObjectLike(value) && Object.keys(value).length;
     const keyClassNames = ['key'].concat(isClickable ? ['opened', 'clickable'] : []);
-    const nodeKey = this.constructor._wrap(key, ...keyClassNames);
+    const nodeKey = this.constructor._wrap(isClickable ? `▼ ︎${key}` : key, ...keyClassNames);
     nodeKey.dataset.path = path;
 
-    nodeKey.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
+    if (isClickable) {
+      nodeKey.onclick = utils.isFunction(this._onNodeClick) ? this._onNodeClick : null;
+    }
 
     node.appendChild(nodeKey);
     node.appendChild(this.constructor._wrap(':', 'colon'));

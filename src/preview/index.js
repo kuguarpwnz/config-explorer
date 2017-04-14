@@ -49,6 +49,7 @@ configExplorer
     const collapsible = ct.nextElementSibling.nextElementSibling.nextElementSibling;
 
     if (collapsible && hasClass(ct, 'clickable') && hasClass(collapsible, 'collapsible')) {
+      ct.innerHTML = hasClass(ct, 'opened') ? ct.innerHTML.replace('▼', '▶') : ct.innerHTML.replace('▶', '▼'); 
       toggle(collapsible);
       toggleClass(ct, 'opened');
       toggleClass(ct, 'closed');
