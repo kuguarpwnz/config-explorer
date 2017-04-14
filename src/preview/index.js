@@ -24,11 +24,12 @@ const changeObject = (object, path, value) => {
 };
 
 
+const show = ['state.entities.show.geo.$in'];
 const configExplorer = new ConfigExplorer(document.getElementById('placeholder'));
 
 configExplorer
   .enums({
     'state.time.value': ['2014', '2015', '2016', '2017']
   })
-  .onEnumChange((path, value) => changeObject(state, path, value) && configExplorer.print(state))
-  .print(state);
+  .onEnumChange((path, value) => changeObject(state, path, value) && configExplorer.print(state, show))
+  .print(state, show);

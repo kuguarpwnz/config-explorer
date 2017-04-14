@@ -10,12 +10,13 @@ export default class {
     return new this(...args);
   }
 
-  print(state) {
+  print(state, showPaths = []) {
     this.placeholder.innerHTML = '';
     this.placeholder.appendChild(
       this._generate(
         document.createElement('pre'),
-        utils.escapeJSON(state)
+        utils.escapeJSON(state),
+        showPaths
       )
     );
 
@@ -41,60 +42,62 @@ export default class {
     return this;
   }
 
-  _generate(target, value, depth = 1, path = '') {
+  _generate(target, value, showPaths, depth = 1, path = '') {
     return utils.isObjectLike(value) ?
-      this._generateObjectLike(target, value, depth, path) :
+      this._generateObjectLike(target, value, showPaths, depth, path) :
       this._generatePrimitive(target, value, path);
   }
 
-  _generateObjectLike(target, object, depth, path) {
+  _generateObjectLike(target, object, showPaths, depth, path) {
     const [openBrace, closeBrace] = this._getBraces(object);
 
     target.appendChild(openBrace);
-    this._generateNode(target, object, depth, path);
+    this._generateNode(target, object, showPaths, depth, path);
     target.appendChild(closeBrace);
 
     return target;
   }
 
-  _generateNode(target, object, depth, path) {
+  _generateNode(target, object, showPaths, depth, path) {
     const keys = Object.keys(object);
     const valuesCount = keys.length;
 
     if (valuesCount) {
       const nodeClassNames = ['collapsible', `depth-${depth}`];
-      this._pathHasEnums(path) && nodeClassNames.push('opened');
+      (this._pathHasEnums(path) || this._pathHasEnums(path, showPaths)) && nodeClassNames.push('opened');
 
       const node = this.constructor._wrap('', ...nodeClassNames);
       target.appendChild(node);
 
-      keys.forEach((key, index) => this._generateNodeValue(object, key, node, path, index, depth, valuesCount));
+      keys.forEach((key, index) => this._generateNodeValue(
+        object, key, node, showPaths, path, index, depth, valuesCount
+      ));
 
       node.appendChild(document.createTextNode('\n'));
       node.appendChild(this._spaces(depth - 1));
     }
   }
 
-  _generateNodeValue(object, key, node, path, index, depth, valuesCount) {
+  _generateNodeValue(object, key, node, showPaths, path, index, depth, valuesCount) {
     const value = object[key];
     node.appendChild(document.createTextNode('\n'));
     node.appendChild(this._spaces(depth));
 
     if (!utils.isArray(object)) {
       path = path ? `${path}.${key}` : key;
-      this._generateNodeValueKey(value, key, node, path);
+      this._generateNodeValueKey(value, key, showPaths, node, path);
     }
 
-    this._generate(node, value, depth + 1, path);
+    this._generate(node, value, showPaths, depth + 1, path);
     valuesCount - 1 !== index && node.appendChild(this.constructor._wrap(',', 'comma'));
   }
 
-  _generateNodeValueKey(value, key, node, path) {
+  _generateNodeValueKey(value, key, showPaths, node, path) {
     const isClickable = utils.isObjectLike(value) && Object.keys(value).length;
     const keyClassNames = ['key'];
 
     isClickable && keyClassNames.push('clickable');
-    this._pathHasEnums(path) && keyClassNames.push('opened');
+    (this._pathHasEnums(path) || this._pathHasEnums(path, showPaths)) && keyClassNames.push('opened');
 
     const nodeKey = this.constructor._wrap(key, ...keyClassNames);
     nodeKey.dataset.path = path;
@@ -165,8 +168,12 @@ export default class {
     return target;
   }
 
-  _pathHasEnums(path) {
-    return Object.keys(this._enums || {}).some((enumPath) => ~enumPath.indexOf(path));
+  _pathHasEnums(path, paths = this._enums) {
+    return (
+      utils.isArray(paths) ?
+        paths :
+        Object.keys(paths || {})
+    ).some((enumPath) => ~enumPath.indexOf(path));
   }
 
   static _getPrimitiveClass(value) {
