@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kuguarpwnz/config-explorer.git"
+    "url": "git+https://github.com/vizabi/config-explorer.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kuguarpwnz/config-explorer/issues"
+    "url": "https://github.com/vizabi/config-explorer/issues"
   },
-  "homepage": "https://github.com/kuguarpwnz/config-explorer#readme",
+  "homepage": "https://github.com/vizabi/config-explorer#readme",
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
