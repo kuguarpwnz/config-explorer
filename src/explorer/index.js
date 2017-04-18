@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 
-module.exports = class {
+class ConfigExplorer {
   constructor(placeholder, indent = 2) {
     this.placeholder = placeholder;
     this.indent = indent;
@@ -108,8 +108,8 @@ module.exports = class {
         const collapsible = currentTarget.nextElementSibling.nextElementSibling.nextElementSibling;
 
         utils.toggleClass(currentTarget, 'opened');
-        utils.toggleClass(collapsible, 'opened');
-        utils.isFunction(this._onNodeClick) && this._onNodeClick(event, collapsible);
+        !utils.toggleClass(collapsible, 'opened') && utils.removeChildrenClass(collapsible, 'opened');
+        utils.isFunction(this._onNodeClick) && this._onNodeClick(event, path, collapsible);
       };
     }
 
@@ -192,4 +192,10 @@ module.exports = class {
 
     return span;
   }
-};
+}
+
+export default ConfigExplorer;
+try {
+  module.exports = ConfigExplorer;
+} catch (e) {
+}
