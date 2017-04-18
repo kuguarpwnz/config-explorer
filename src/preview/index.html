@@ -49,15 +49,15 @@
         .collapsible {
             display: none;
         }
-        
+
         .collapsible.opened {
             display: inline;
         }
-        
+
         .collapsible.depth-1 {
             display: inline;
         }
-        
+
         .value.enum.first {
             border-radius: 5px 0 0 5px;;
         }
@@ -74,7 +74,7 @@
         .key {
             color: #43555d;
         }
-        
+
         .key.clickable {
             font-weight: bold;
         }
@@ -82,7 +82,7 @@
         .key.clickable:before {
             content: '▶ ';
         }
-        
+
         .key.clickable.opened:before {
             content: '▼ ';
         }
@@ -103,6 +103,10 @@
 
         .brace, .colon {
             color: #43555d;
+        }
+
+        .delimiter:before {
+            content: '|';
         }
     </style>
 </head>

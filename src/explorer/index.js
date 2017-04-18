@@ -124,13 +124,18 @@ export default class {
   }
 
   _spaces(count = 0) {
+    const spaces = this.constructor._wrap('', 'space');
+
     count *= this.indent;
-    let result = "";
     for (let i = 0; i < count; ++i) {
-      result = result + (i % this.indent ? ' ' : '|');
+      spaces.appendChild(
+        i % this.indent ?
+          document.createTextNode(' ') :
+          this.constructor._wrap('', 'delimiter')
+      );
     }
 
-    return this.constructor._wrap(result, 'space');
+    return spaces;
   }
 
   _generatePrimitive(target, value, path) {
