@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/explorer/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack"
