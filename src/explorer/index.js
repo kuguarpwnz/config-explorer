@@ -104,11 +104,11 @@ class ConfigExplorer {
 
     if (isClickable) {
       nodeKey.onclick = (event) => {
-        const { currentTarget } = event;
-        const collapsible = currentTarget.nextElementSibling.nextElementSibling.nextElementSibling;
+        const collapsible = event.currentTarget
+          .nextElementSibling
+          .nextElementSibling
+          .nextElementSibling;
 
-        utils.toggleClass(currentTarget, 'opened');
-        !utils.toggleClass(collapsible, 'opened') && utils.removeChildrenClass(collapsible, 'opened');
         utils.isFunction(this._onNodeClick) && this._onNodeClick(event, path, collapsible);
       };
     }
