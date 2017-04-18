@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 
-export default class {
+module.exports = class {
   constructor(placeholder, indent = 2) {
     this.placeholder = placeholder;
     this.indent = indent;
@@ -192,4 +192,4 @@ export default class {
 
     return span;
   }
-}
+};
