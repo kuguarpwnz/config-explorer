@@ -2,6 +2,8 @@ const path = require('path');
 
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 
 const resolve = (...args) => path.resolve(__dirname, ...args);
 
@@ -20,7 +22,6 @@ module.exports = {
     !isDev && {
       library: 'ConfigExplorer',
       libraryTarget: 'umd',
-      umdNamedDefine: true
     }),
 
   module: {
@@ -40,7 +41,11 @@ module.exports = {
   plugins: isDev ? [
       new webpack.HotModuleReplacementPlugin()
     ] : [
-      new CleanWebpackPlugin(['dist'])
+      new CleanWebpackPlugin(['dist']),
+      new UglifyJSPlugin({
+        comments: false,
+        sourceMap: true,
+      }),
     ],
 
   devServer: {
