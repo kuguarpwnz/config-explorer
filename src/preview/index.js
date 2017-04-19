@@ -23,30 +23,33 @@ const changeObject = (object, path, value) => {
   }
 };
 
+export const hasClass = (element, search) => ~element.className.split(' ').indexOf(search);
 
-function toggleClass(element, toggleClass) {
+const toggleClass = (element, toggleClass) => {
   const classes = element.className.split(' ');
-  const result = classes.filter(function (value) { return value !== toggleClass; });
+  const result = classes.filter(function(value) {
+    return value !== toggleClass;
+  });
   const hasNotClass = result.length === classes.length;
   hasNotClass && result.push(toggleClass);
   element.className = result.join(' ');
   return hasNotClass;
-}
+};
 
-function removeChildrenClass(element, className) {
+const removeChildrenClass = (element, className) => {
   const sibling = element.nextElementSibling;
   if (sibling && hasClass(sibling, className)) {
     removeChildrenClass(sibling, className);
   }
 
   if (element.hasChildNodes()) {
-    element.childNodes.forEach(function (node) {
+    element.childNodes.forEach(function(node) {
       return node.nodeType === 1 && removeChildrenClass(node, className)
     });
   }
 
   hasClass(element, className) && toggleClass(element, className);
-}
+};
 
 let show = ['state.entities.show.geo.$in'];
 const configExplorer = new ConfigExplorer(document.getElementById('placeholder'));
@@ -65,9 +68,7 @@ configExplorer
     if (added && !~show.indexOf(path)) {
       show.push(path);
     } else {
-      show = show.filter(function(showPath) {
-        return showPath !== path && showPath.lastIndexOf(path) !== 0;
-      });
+      show = show.filter((showPath) => showPath !== path && showPath.lastIndexOf(path));
     }
   })
   .onEnumChange((path, value) => changeObject(state, path, value) && configExplorer.print(state, show))
