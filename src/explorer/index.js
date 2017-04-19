@@ -178,7 +178,7 @@ class ConfigExplorer {
       utils.isArray(paths) ?
         paths :
         Object.keys(paths || {})
-    ).some((enumPath) => ~enumPath.indexOf(path));
+    ).some((enumPath) => !enumPath.indexOf(path));
   }
 
   static _getPrimitiveClass(value) {
