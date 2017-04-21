@@ -166,8 +166,16 @@ class ConfigExplorer {
       });
 
     } else {
-      value = utils.isString(value) ? `"${value}"` : value;
-      target.appendChild(this.constructor._wrap(value, 'value', this.constructor._getPrimitiveClass(value)));
+      const isNull = value === null;
+      value = utils.isString(value) ? `"${value}"` : isNull ? 'null' : value;
+
+      target.appendChild(
+        this.constructor._wrap(
+          value,
+          'value',
+          isNull ? 'null' : this.constructor._getPrimitiveClass(value)
+        )
+      );
     }
 
     return target;
